@@ -120,6 +120,7 @@ public class BOHandler {
                 .addAnnotation(NoArgsConstructor.class)
                 .addAnnotation(AllArgsConstructor.class);
         // Fields
+        List<String> fixedArgs = new ArrayList<>();
         int argIndex = 0;
         for(ABIDefinition.NamedType namedType: args){
             String argName = namedType.getName();
@@ -130,6 +131,7 @@ public class BOHandler {
             TypeName type = SolidityTypeHandler.convert(typeString);
             boBuilder.addField(type, argName, Modifier.PRIVATE);
             argIndex++;
+            fixedArgs.add(argName);
         }
 
         // Methods
@@ -137,8 +139,8 @@ public class BOHandler {
                 .addModifiers(Modifier.PUBLIC)
                 .returns(ListObject.class.getGenericInterfaces()[0])
                 .addStatement("$T args = new $T()", List.class, ArrayList.class);
-        for(ABIDefinition.NamedType arg: args){
-            toArgsMethodBuilder.addStatement("args.add($L)", arg.getName());
+        for(String arg: fixedArgs){
+            toArgsMethodBuilder.addStatement("args.add($L)", arg);
         }
         toArgsMethodBuilder.addStatement("return args");
         boBuilder.addMethod(toArgsMethodBuilder.build());
