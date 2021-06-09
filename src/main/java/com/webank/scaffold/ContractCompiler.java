@@ -24,7 +24,7 @@ public class ContractCompiler {
      */
     public void compile(File abiOut, File binOut, File smBinOut) throws Exception {
         CompileSolToJava compiler = new CompileSolToJava();
-        String solName = "*";//Compile everything
+        String solName = "";//Compile everything
 
         compiler.compileSolToJava(
                 solName,
